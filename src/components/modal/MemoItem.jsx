@@ -1,15 +1,44 @@
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import { taskActions } from '../../store/task-slice';
 
-const MemoItem = () => {
+const MemoItem = ({ id, onRemoveItem }) => {
+  const [text, setText] = useState('');
+
+  const dispatch = useDispatch();
+
+  const setMemo = ({ target }) => {
+    const { name: id, value } = target;
+
+    setText(value);
+    dispatch(taskActions.setMemo({ id, value }));
+  };
+
+  const removeMemoHandler = () => {
+    onRemoveItem(id);
+    dispatch(taskActions.removeMemo(id));
+  };
+
   return (
     <Memo>
-      <textarea name='txt' placeholder='일정을 입력하세요'></textarea>
+      <textarea
+        name={id}
+        placeholder='일정을 입력하세요'
+        value={text}
+        onChange={setMemo}
+        autoFocus
+      ></textarea>
+      <button onClick={removeMemoHandler}>x</button>
     </Memo>
   );
 };
 
 const Memo = styled.li`
   position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   textarea {
     font-size: 0.9rem;
@@ -20,9 +49,10 @@ const Memo = styled.li`
     background-color: transparent;
     color: ${({ theme }) => theme.color.black};
     font-size: 1rem;
-    line-height: 1.5rem;
+    line-height: 1.2rem;
     padding: 1rem 0;
     resize: none;
+    overflow: hidden;
   }
 
   &::after {

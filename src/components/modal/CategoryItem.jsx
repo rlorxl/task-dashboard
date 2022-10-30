@@ -1,7 +1,18 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { useSelector } from 'react-redux';
 
-const CategoryItem = () => {
-  return <Category>category</Category>;
+const CategoryItem = ({ item, onSelect }) => {
+  const { selectedCategory } = useSelector((state) => state.task);
+
+  const selectHandler = () => {
+    onSelect(item);
+  };
+
+  return (
+    <Category onClick={selectHandler} active={selectedCategory === item}>
+      {item}
+    </Category>
+  );
 };
 
 const Category = styled.li`
@@ -15,6 +26,13 @@ const Category = styled.li`
     color: #fff;
     background: ${({ theme }) => theme.color.carrot};
   }
+
+  ${({ active }) =>
+    active &&
+    css`
+      background: ${({ theme }) => theme.color.carrot};
+      color: #fff;
+    `}
 `;
 
 export default CategoryItem;

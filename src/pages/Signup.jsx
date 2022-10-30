@@ -4,7 +4,8 @@ import { Button } from '../styled/style';
 import styled from 'styled-components';
 import { BsArrowRightShort } from 'react-icons/bs';
 import Input from '../components/UI/Input';
-import useHttp from '../hooks/useHttp';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import app from '../firebase';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ const Signup = () => {
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
 
-  const { isLoading, error, sendRequest } = useHttp();
+  const auth = getAuth(app);
 
   const emailValidateHandler = () => {
     const emailRegex =
@@ -48,28 +49,25 @@ const Signup = () => {
     navigate('/login');
   };
 
-  const errorHandler = (err) => {
-    console.log(err.message);
-  };
-
   const submitHandler = (e) => {
     e.preventDefault();
+
     if (emailIsValid && passwordIsValid) {
-      sendRequest(
-        {
-          url: 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDtr9PdL9GSyR6LjtOhuX-3W0-R6vhb4h0',
-          method: 'POST',
-          body: {
-            email: emailInputRef.current.value,
-            password: passwordInputRef.current.value,
-            returnSecureToken: true,
-          },
-          headers: { 'Content-Type': 'application/json' },
-        },
-        fetchUser,
-        'Something is Wrong!',
-        errorHandler
-      );
+      createUserWithEmailAndPassword(
+        auth,
+        emailInputRef.current.value,
+        passwordInputRef.current.value
+      )
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log(user);
+          fetchUser();
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(`${errorCode}: ${errorMessage}`);
+        });
     }
   };
 

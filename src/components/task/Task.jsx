@@ -1,19 +1,64 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import CreateBtn from '../UI/CreateBtn';
+import TaskModal from '../UI/TaskModal';
+import { getDatabase, ref, onValue } from 'firebase/database';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
-const Task = (props) => {
+const Task = () => {
+  const [showModal, setShowModal] = useState(false);
+
+  // const auth = getAuth();
+
+  // const fetchTasks = useCallback((uid) => {
+  //   try {
+  //     const db = getDatabase();
+  //     const userId = uid;
+  //     const postRef = ref(db, `planit/${userId}`);
+
+  //     onValue(postRef, (snapshot) => {
+  //       const data = snapshot.val();
+
+  //       if (!data) throw new Error('일정을 찾을 수 없습니다.');
+  //       console.log(data);
+  //     });
+  //   } catch (err) {
+  //     setError(err.message);
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       fetchTasks(user.uid);
+  //     } else {
+  //       console.log('error');
+  //     }
+  //   });
+  // }, [fetchTasks]);
+
+  const show = () => {
+    setShowModal(true);
+  };
+
+  const close = () => {
+    setShowModal(false);
+  };
+
   return (
-    <TaskArea>
-      <CreateBtn onShow={props.show} />
-      <div>
-        <ul>
-          <li>일정을 추가하세요.</li>
-          <li>일정을 추가하세요.</li>
-          <li>일정을 추가하세요.</li>
-        </ul>
-      </div>
-    </TaskArea>
+    <>
+      {showModal && <TaskModal onClose={close} />}
+      <TaskArea>
+        <CreateBtn onShow={show} />
+        <div>
+          <ul>
+            <li>일정을 추가하세요.</li>
+            <li>일정을 추가하세요.</li>
+            <li>일정을 추가하세요.</li>
+          </ul>
+        </div>
+      </TaskArea>
+    </>
   );
 };
 

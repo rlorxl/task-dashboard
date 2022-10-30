@@ -5,7 +5,23 @@ import Loading from './pages/Loading';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 
+import { useEffect } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+
 const App = () => {
+  // auth
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+        console.log(uid);
+      } else {
+        console.log('error');
+      }
+    });
+  }, []);
+
   return (
     <>
       <Routes>

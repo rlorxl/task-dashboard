@@ -4,17 +4,11 @@ import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 
 const MonthBtn = (props) => {
   const increaseMonthHandler = () => {
-    props.increaseMonth();
-    props.setNextYear();
-    props.setDate();
-    props.setNextDay();
+    props.onIncrease();
   };
 
   const decreaseMonthHandler = () => {
-    props.decreaseMonth();
-    props.setPrevYear();
-    props.setDate();
-    props.setPrevDay();
+    props.onDecrease();
   };
 
   return (

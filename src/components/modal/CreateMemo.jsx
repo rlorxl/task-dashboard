@@ -2,22 +2,47 @@ import styled from 'styled-components';
 import { Button } from '../../styled/style';
 import { BiPlus } from 'react-icons/bi';
 import MemoItem from './MemoItem';
+import { useState } from 'react';
 
 const CreateMemo = () => {
+  const [memoItem, setMemoItem] = useState([]);
+
+  const createRandomId = () => {
+    return Math.random().toString(36).substring(2, 12);
+  };
+
+  const addMemoHandler = () => {
+    setMemoItem((prev) => [...prev, { id: createRandomId() }]);
+  };
+
+  const removeMemo = (uniqId) => {
+    const newItems = memoItem.filter((item) => item.id !== uniqId);
+    setMemoItem(newItems);
+  };
+
   return (
-    <div>
+    <MemoArea>
       <TitleArea>
         <h3>Memo</h3>
-        <Button>
+        <Button onClick={addMemoHandler}>
           <BiPlus />
         </Button>
       </TitleArea>
       <ul>
-        <MemoItem />
+        {memoItem.map((item) => (
+          <MemoItem key={item.id} id={item.id} onRemoveItem={removeMemo} />
+        ))}
       </ul>
-    </div>
+    </MemoArea>
   );
 };
+
+const MemoArea = styled.div`
+  ul {
+    height: 150px;
+    overflow-y: scroll;
+  }
+`;
 
 const TitleArea = styled.div`
   display: flex;

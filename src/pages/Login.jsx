@@ -5,18 +5,18 @@ import { BsArrowRightShort } from 'react-icons/bs';
 import Logo from '../components/UI/Logo';
 import Input from '../components/UI/Input';
 import AuthContext from '../store/auth-context';
-import useHttp from '../hooks/useHttp';
 import { Button } from '../styled/style';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import app from '../firebase';
 
 const Login = () => {
   const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
-
-  const { isLoading, error, sendRequest } = useHttp();
+  const auth = getAuth(app);
 
   const [isAllTouched, setIsAllTouched] = useState(false);
 
-  const loginInputRef = useRef();
+  const emailInputRef = useRef();
   const passwordInputRef = useRef();
 
   const touchedHandler = () => {
@@ -24,7 +24,7 @@ const Login = () => {
       /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
 
     const valid =
-      emailRegex.test(loginInputRef.current.value) &&
+      emailRegex.test(emailInputRef.current.value) &&
       passwordInputRef.current.value.length > 4;
 
     if (valid) {
@@ -34,33 +34,30 @@ const Login = () => {
     }
   };
 
-  const fetchUser = (data) => {
-    authCtx.login(data.idToken);
+  const fetchUser = (user) => {
+    authCtx.login(user.uid);
     navigate('/home');
-  };
-
-  const errorHandler = (err) => {
-    alert(err.message);
-    setIsAllTouched(false);
   };
 
   const loginHandler = (e) => {
     e.preventDefault();
-    sendRequest(
-      {
-        url: 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDtr9PdL9GSyR6LjtOhuX-3W0-R6vhb4h0',
-        method: 'POST',
-        body: {
-          email: loginInputRef.current.value,
-          password: passwordInputRef.current.value,
-          returnSecureToken: true,
-        },
-        headers: { 'Content-Type': 'application/json' },
-      },
-      fetchUser,
-      '이메일, 패스워드를 확인해 주세요.',
-      errorHandler
-    );
+
+    signInWithEmailAndPassword(
+      auth,
+      emailInputRef.current.value,
+      passwordInputRef.current.value
+    )
+      .then((userCredential) => {
+        const user = userCredential.user;
+        fetchUser(user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`${errorCode}: ${errorMessage}`);
+        alert('이메일, 패스워드를 확인해 주세요.');
+        setIsAllTouched(false);
+      });
   };
 
   return (
@@ -75,7 +72,7 @@ const Login = () => {
         <Input
           type='text'
           placeholder='이메일'
-          ref={loginInputRef}
+          ref={emailInputRef}
           onChange={touchedHandler}
           autoFocus
         />
@@ -85,7 +82,6 @@ const Login = () => {
           ref={passwordInputRef}
           onChange={touchedHandler}
         />
-        {/* {error && <p>{error}</p>} */}
         {isAllTouched && <LoginBtn>Press Enter</LoginBtn>}
       </form>
     </Wrapper>

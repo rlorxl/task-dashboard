@@ -7,12 +7,17 @@ const Day = ({ year, month, date, today, space }) => {
 
   const setDateHandler = () => {
     if (date === undefined) return;
-    dispatch(taskActions.setDate(`${year}${month + 1}${date + 1}`));
+    const _month = month + 1;
+    const _date = date + 1;
+    const newMonth = _month < 10 ? '0' + _month : _month;
+    const newDate = _date < 10 ? '0' + _date : _date;
+
+    dispatch(taskActions.setDate(`${year}${newMonth}${newDate}`));
   };
 
   return (
     <Item
-      isToday={today && date === new Date().getDate()}
+      isToday={today && date + 1 === new Date().getDate()}
       space={space}
       onClick={setDateHandler}
     >

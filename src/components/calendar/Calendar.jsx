@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import MonthBtn from '../UI/MonthBtn';
 import Day from './Day';
@@ -30,48 +31,77 @@ const initialDate = {
 const Calendar = () => {
   const [year, setYear] = useState(startYear);
   const [month, setMonth] = useState(initialDate.startMonth);
-  const [date, setDate] = useState(initialDate.startDate);
+  const [date, setDate] = useState([]);
   const [day, setDay] = useState(initialDate.startDay);
-
   const today = year === startYear && month === initialDate.startMonth;
 
-  const setDateHandler = {
-    increaseMonth() {
-      if (month >= 11) setMonth(0);
-      else setMonth(month + 1);
-    },
-    decreaseMonth() {
-      if (month <= 0) setMonth(11);
-      else setMonth(month - 1);
-    },
-    setPrevYear() {
-      if (month <= 0) setYear(year - 1);
-    },
-    setNextYear() {
-      if (month >= 11) setYear(year + 1);
-    },
-    setDate() {
-      const lastDate = new Date(year, month, 0).getDate();
-      setDate(lastDate);
-    },
-    setNextDay() {
-      const startDay = new Date(year, month + 1, 1).getDay();
-      setDay(startDay);
-    },
-    setPrevDay() {
-      const startDay = new Date(year, month - 1, 1).getDay();
-      setDay(startDay);
-    },
+  useEffect(() => {
+    const lastDate = new Date(year, month + 1, 0).getDate();
+    const newDateArr = new Array(lastDate).fill('');
+    setDate(newDateArr);
+  }, [month]);
+
+  const increaseMonthHandler = () => {
+    if (month === 11) {
+      setMonth(0);
+      setYear((prev) => prev + 1);
+    } else setMonth((prev) => prev + 1);
+
+    const startDay = new Date(year, month + 1, 1).getDay();
+    setDay(startDay);
   };
 
+  const decreaseMonthHandler = () => {
+    if (month === 0) {
+      setMonth(11);
+      setYear((prev) => prev - 1);
+    } else setMonth((prev) => prev - 1);
+
+    const startDay = new Date(year, month - 1, 1).getDay();
+    setDay(startDay);
+  };
+
+  // const setDateHandler = {
+  //   increaseMonth() {
+  //     if (month >= 11) setMonth(0);
+  //     else setMonth(month + 1);
+  //   },
+  //   decreaseMonth() {
+  //     if (month <= 0) setMonth(11);
+  //     else setMonth(month - 1);
+  //   },
+  //   setPrevYear() {
+  //     if (month <= 0) setYear(year - 1);
+  //   },
+  //   setNextYear() {
+  //     if (month >= 11) setYear(year + 1);
+  //   },
+  //   setDate() {
+  //     const lastDate = new Date(year, month, 0).getDate();
+  //     const newDateArr = new Array(lastDate).fill('');
+  //     setDate(newDateArr);
+  //   },
+  //   setNextDay() {
+  //     const startDay = new Date(year, month + 1, 1).getDay();
+  //     setDay(startDay);
+  //   },
+  //   setPrevDay() {
+  //     const startDay = new Date(year, month - 1, 1).getDay();
+  //     setDay(startDay);
+  //   },
+  // };
+
   const test = Array(day).fill(0);
-  const dateNumber = Array(date).fill(0);
 
   return (
     <CalendarArea>
       <Month>
         <h2>{monthName[month]}</h2>
-        <MonthBtn {...setDateHandler} />
+        <MonthBtn
+          // {...setDateHandler}
+          onIncrease={increaseMonthHandler}
+          onDecrease={decreaseMonthHandler}
+        />
       </Month>
       <Flexbox gap='1.4em'>
         {week.map((item, i) => (
@@ -82,7 +112,7 @@ const Calendar = () => {
         {test.map((_, i) => (
           <Day key={i} space={'space'} />
         ))}
-        {dateNumber.map((_, i) => (
+        {date.map((_, i) => (
           <Day key={i} year={year} month={month} date={i} today={today} />
         ))}
       </Flexbox>
@@ -126,4 +156,4 @@ const Flexbox = styled.div`
   margin-bottom: 1em;
 `;
 
-export default React.memo(Calendar);
+export default Calendar;

@@ -3,9 +3,13 @@ import styled from 'styled-components';
 import { BiArrowFromLeft } from 'react-icons/bi';
 import { Button } from '../../styled/style';
 
-const LogoutBtn = () => {
+const LogoutBtn = (props) => {
+  const logout = () => {
+    props.onLogout();
+  };
+
   return (
-    <BtnArea>
+    <BtnArea onClick={logout}>
       <BiArrowFromLeft />
       Log out
     </BtnArea>

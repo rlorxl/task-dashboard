@@ -1,8 +1,20 @@
 import styled from 'styled-components';
 import { BiPencil } from 'react-icons/bi';
 import LogoutBtn from '../UI/LogoutBtn';
+import { useContext } from 'react';
+import AuthContext from '../../store/auth-context';
+import { useNavigate } from 'react-router-dom';
 
 const Intro = () => {
+  const navigate = useNavigate();
+  const authCtx = useContext(AuthContext);
+
+  const logoutHandler = () => {
+    console.log('logout');
+    authCtx.logout();
+    navigate('/login');
+  };
+
   return (
     <MonthArea>
       <Title>오늘의 기록</Title>
@@ -12,7 +24,7 @@ const Intro = () => {
           <BiPencil />
         </span>
       </DescArea>
-      <LogoutBtn />
+      <LogoutBtn onLogout={logoutHandler} />
     </MonthArea>
   );
 };

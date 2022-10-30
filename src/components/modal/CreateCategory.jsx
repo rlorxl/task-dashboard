@@ -1,24 +1,57 @@
 import styled from 'styled-components';
+import CategoryItem from './CategoryItem';
 import { Button } from '../../styled/style';
 import { BiPlus } from 'react-icons/bi';
-import CategoryItem from './CategoryItem';
+import { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { taskActions } from '../../store/task-slice';
+import { getDatabase, ref, set } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
 
 const CreateCategory = () => {
+  const categoryInputRef = useRef();
+  const dispatch = useDispatch();
+  const { categories } = useSelector((state) => state.task);
+
+  // useEffect(() => {
+  //   const db = getDatabase();
+  //   const auth = getAuth();
+  //   const user = auth.currentUser;
+  //   const userId = user.uid;
+  //   const userRef = ref(db, `planit/${userId}/user`);
+
+  //   console.log('add category');
+  //   set(userRef, { categories: categories });
+  // }, [categories]);
+
+  const addCategory = async (e) => {
+    e.preventDefault();
+    if (categoryInputRef.current.value.trim() !== '') {
+      dispatch(taskActions.addCategory(categoryInputRef.current.value));
+    }
+  };
+
+  const selectCategory = (name) => {
+    dispatch(taskActions.setCategory(name));
+  };
+
   return (
     <div>
       <TitleArea>
         <h3>Category</h3>
         <AddCategory>
-          <form>
-            <input type='text' autoFocus />
+          <form onSubmit={addCategory}>
+            <input type='text' autoFocus ref={categoryInputRef} />
+            <Button>
+              <BiPlus />
+            </Button>
           </form>
-          <Button>
-            <BiPlus />
-          </Button>
         </AddCategory>
       </TitleArea>
       <CategoryListArea>
-        <CategoryItem />
+        {categories.map((item) => (
+          <CategoryItem key={item} item={item} onSelect={selectCategory} />
+        ))}
       </CategoryListArea>
     </div>
   );
