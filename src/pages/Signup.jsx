@@ -49,24 +49,24 @@ const Signup = () => {
     navigate('/login');
   };
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
 
     if (emailIsValid && passwordIsValid) {
-      createUserWithEmailAndPassword(
+      await createUserWithEmailAndPassword(
         auth,
         emailInputRef.current.value,
         passwordInputRef.current.value
       )
         .then((userCredential) => {
-          const user = userCredential.user;
+          const { user } = userCredential;
           console.log(user);
           fetchUser();
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          console.log(`${errorCode}: ${errorMessage}`);
+          throw new Error(`${errorCode}: ${errorMessage}`);
         });
     }
   };

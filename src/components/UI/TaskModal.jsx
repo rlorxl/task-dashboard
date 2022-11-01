@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getDatabase, ref, set, onValue, update } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
 import { taskActions } from '../../store/task-slice';
+import usePost from '../../hooks/usePost';
 
 const backdropRoot = document.querySelector('#backdrop-root');
 const modalRoot = document.querySelector('#modal-root');
@@ -28,13 +29,15 @@ const TaskModal = (props) => {
     props.onClose();
   };
 
+  const { sendRequest } = usePost();
+
   const createTask = () => {
     const db = getDatabase();
     const auth = getAuth();
     const userId = auth.currentUser.uid;
-    const postRef = ref(db, `planit/${userId}`);
-    const userRef = ref(db, `planit/${userId}/user`);
     const month = selectedDate.slice(0, 4) + '-' + selectedDate.slice(4, 6);
+    const postRef = ref(db, `planit/${userId}`);
+    const userRef = `planit/${userId}/user`;
 
     onValue(
       postRef,
@@ -65,23 +68,29 @@ const TaskModal = (props) => {
               // 입력날짜 데이터 O
               console.log('입력 날짜 데이터에 업로드 중...📂');
 
-              const taskRef = ref(
-                db,
-                `planit/${userId}/tasks/${taskKey}/${dateKey}`
-              );
+              // const taskRef = ref(
+              //   db,
+              //   `planit/${userId}/tasks/${taskKey}/${dateKey}`
+              // );
 
-              const tasks = {};
-              for (const [key, value] of Object.entries(memos)) {
-                const postData = {
-                  category: selectedCategory,
-                  memo: value,
-                  completed: false,
-                };
-                tasks[key] = postData;
-              }
+              // const tasks = {};
+              // for (const [key, value] of Object.entries(memos)) {
+              //   const postData = {
+              //     category: selectedCategory,
+              //     memo: value,
+              //     completed: false,
+              //   };
+              //   tasks[key] = postData;
+              // }
 
-              update(taskRef, tasks);
-              set(userRef, { categories: categories });
+              // update(taskRef, tasks);
+              // set(userRef, { categories: categories });
+
+              sendRequest({
+                method: 'update',
+                sendRef: `planit/${userId}/tasks/${taskKey}/${dateKey}`,
+                userRef: userRef,
+              });
             } else {
               // 입력날짜 데이터 X
               console.log('새로운 날짜 데이터에 업로드 중...📂');
@@ -129,22 +138,28 @@ const TaskModal = (props) => {
           // first
           console.log('first setting...🖋');
 
-          const taskRef = ref(
-            db,
-            `planit/${userId}/tasks/${month}/${selectedDate}`
-          );
+          // const taskRef = ref(
+          //   db,
+          //   `planit/${userId}/tasks/${month}/${selectedDate}`
+          // );
 
-          const tasks = {};
-          for (const [key, value] of Object.entries(memos)) {
-            const postData = {
-              category: selectedCategory,
-              memo: value,
-              completed: false,
-            };
-            tasks[key] = postData;
-          }
-          set(taskRef, tasks);
-          set(userRef, { categories: categories });
+          // const tasks = {};
+          // for (const [key, value] of Object.entries(memos)) {
+          //   const postData = {
+          //     category: selectedCategory,
+          //     memo: value,
+          //     completed: false,
+          //   };
+          //   tasks[key] = postData;
+          // }
+          // set(taskRef, tasks);
+          // set(userRef, { categories: categories });
+
+          sendRequest({
+            method: 'set',
+            sendRef: `planit/${userId}/tasks/${month}/${selectedDate}`,
+            userRef: userRef,
+          });
         }
 
         closeModal();

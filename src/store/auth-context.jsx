@@ -26,8 +26,6 @@ export const AuthContextProvider = (props) => {
     localStorage.removeItem('token');
   };
 
-  const authentication = () => {};
-
   const contextValue = {
     token,
     isLoggedIn: userIsLoggedIn,

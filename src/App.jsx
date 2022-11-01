@@ -1,35 +1,57 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
 
 import Home from './pages/Home';
-import Loading from './pages/Loading';
+import Loading from './components/common/Loading';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 
-import { useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import AuthContext from './store/auth-context';
 
 const App = () => {
-  // auth
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const authCtx = useContext(AuthContext);
+
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        const uid = user.uid;
-        console.log(uid);
+        console.log(user.uid);
+        setIsLoggedIn(true);
       } else {
-        console.log('error');
+        setIsLoggedIn(false);
       }
     });
   }, []);
 
+  const PrivateRoute = ({ children }) => {
+    if (authCtx.isLoggedIn) {
+      return <Navigate to='/' replace />;
+    }
+    return children;
+  };
+
   return (
     <>
       <Routes>
-        <Route path='/' element={<Navigate to='/home' />} />
-        <Route path='/loading' element={<Loading />} />
-        <Route path='/home' element={<Home />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/signup' element={<Signup />} />
+        <Route path='/' element={isLoggedIn ? <Home /> : <Loading />} />
+        <Route
+          path='/login'
+          element={
+            <PrivateRoute>
+              <Login />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='/signup'
+          element={
+            <PrivateRoute>
+              <Signup />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </>
   );

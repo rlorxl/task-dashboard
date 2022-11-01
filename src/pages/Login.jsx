@@ -35,20 +35,21 @@ const Login = () => {
   };
 
   const fetchUser = (user) => {
-    authCtx.login(user.uid);
+    authCtx.login(user.accessToken);
     navigate('/home');
   };
 
-  const loginHandler = (e) => {
+  const loginHandler = async (e) => {
     e.preventDefault();
 
-    signInWithEmailAndPassword(
+    await signInWithEmailAndPassword(
       auth,
       emailInputRef.current.value,
       passwordInputRef.current.value
     )
       .then((userCredential) => {
-        const user = userCredential.user;
+        const { user } = userCredential;
+        console.log(user);
         fetchUser(user);
       })
       .catch((error) => {

@@ -3,39 +3,33 @@ import styled from 'styled-components';
 import CreateBtn from '../UI/CreateBtn';
 import TaskModal from '../UI/TaskModal';
 import { getDatabase, ref, onValue } from 'firebase/database';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 
 const Task = () => {
   const [showModal, setShowModal] = useState(false);
 
-  // const auth = getAuth();
+  const auth = getAuth();
 
-  // const fetchTasks = useCallback((uid) => {
-  //   try {
-  //     const db = getDatabase();
-  //     const userId = uid;
-  //     const postRef = ref(db, `planit/${userId}`);
+  const fetchTasks = useCallback(() => {
+    try {
+      const db = getDatabase();
+      const userId = auth.currentUser.uid;
+      const postRef = ref(db, `planit/${userId}`);
 
-  //     onValue(postRef, (snapshot) => {
-  //       const data = snapshot.val();
+      onValue(postRef, (snapshot) => {
+        const data = snapshot.val();
 
-  //       if (!data) throw new Error('일정을 찾을 수 없습니다.');
-  //       console.log(data);
-  //     });
-  //   } catch (err) {
-  //     setError(err.message);
-  //   }
-  // }, []);
+        if (!data) throw new Error('일정을 불러올 수 없습니다.');
+        console.log(data);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
 
-  // useEffect(() => {
-  //   onAuthStateChanged(auth, (user) => {
-  //     if (user) {
-  //       fetchTasks(user.uid);
-  //     } else {
-  //       console.log('error');
-  //     }
-  //   });
-  // }, [fetchTasks]);
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
 
   const show = () => {
     setShowModal(true);

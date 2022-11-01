@@ -13,17 +13,6 @@ const CreateCategory = () => {
   const dispatch = useDispatch();
   const { categories } = useSelector((state) => state.task);
 
-  // useEffect(() => {
-  //   const db = getDatabase();
-  //   const auth = getAuth();
-  //   const user = auth.currentUser;
-  //   const userId = user.uid;
-  //   const userRef = ref(db, `planit/${userId}/user`);
-
-  //   console.log('add category');
-  //   set(userRef, { categories: categories });
-  // }, [categories]);
-
   const addCategory = async (e) => {
     e.preventDefault();
     if (categoryInputRef.current.value.trim() !== '') {

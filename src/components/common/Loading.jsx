@@ -20,9 +20,9 @@ const loadingImages = [
 ];
 
 const Loading = () => {
-  useEffect(() => {}, []);
+  // useEffect(() => {}, []);
 
-  return <div>Loading</div>;
+  return <div>Loading...</div>;
 };
 
 export default Loading;
