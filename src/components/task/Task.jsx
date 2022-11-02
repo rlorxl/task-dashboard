@@ -7,10 +7,11 @@ import { getAuth } from 'firebase/auth';
 
 const Task = () => {
   const [showModal, setShowModal] = useState(false);
+  const [taskData, setTaskData] = useState(null);
 
   const auth = getAuth();
 
-  const fetchTasks = useCallback(() => {
+  useEffect(() => {
     try {
       const db = getDatabase();
       const userId = auth.currentUser.uid;
@@ -19,17 +20,15 @@ const Task = () => {
       onValue(postRef, (snapshot) => {
         const data = snapshot.val();
 
-        if (!data) throw new Error('일정을 불러올 수 없습니다.');
-        console.log(data);
+        if (data) {
+          setTaskData(data);
+          console.log(data);
+        }
       });
     } catch (err) {
-      console.log(err);
+      console.log(err.message || '일정을 불러올 수 없습니다.');
     }
   }, []);
-
-  useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
 
   const show = () => {
     setShowModal(true);

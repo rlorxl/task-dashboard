@@ -1,9 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const month = new Date().getMonth() + 1;
+const date = new Date().getDate();
+
+const initialMonth = month < 10 ? '0' + month : month;
+const initialDate = date < 10 ? '0' + date : date;
+
 const initialStateValue = {
-  date: `${new Date().getFullYear()}${
-    new Date().getMonth() + 1
-  }${new Date().getDate()}`,
+  date: `${new Date().getFullYear()}${initialMonth}${initialDate}`,
   categories: [],
   selectedCategory: '',
   memos: {},
