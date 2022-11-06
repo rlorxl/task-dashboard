@@ -1,23 +1,13 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { taskActions } from '../../store/task-slice';
 
-const MemoItem = ({ id, onRemoveItem }) => {
-  const [text, setText] = useState('');
-
-  const dispatch = useDispatch();
-
-  const setMemo = ({ target }) => {
-    const { name: id, value } = target;
-
-    setText(value);
-    dispatch(taskActions.setMemo({ id, value }));
+const MemoItem = ({ id, onAddItem, onRemoveItem }) => {
+  const addMemoHandler = ({ target }) => {
+    const { name, value } = target;
+    onAddItem(name, value);
   };
 
   const removeMemoHandler = () => {
     onRemoveItem(id);
-    dispatch(taskActions.removeMemo(id));
   };
 
   return (
@@ -25,8 +15,7 @@ const MemoItem = ({ id, onRemoveItem }) => {
       <textarea
         name={id}
         placeholder='일정을 입력하세요'
-        value={text}
-        onChange={setMemo}
+        onChange={addMemoHandler}
         autoFocus
       ></textarea>
       <button onClick={removeMemoHandler}>x</button>

@@ -1,34 +1,29 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import CreateBtn from '../UI/CreateBtn';
 import TaskModal from '../UI/TaskModal';
-import { getDatabase, ref, onValue } from 'firebase/database';
-import { getAuth } from 'firebase/auth';
+import TaskItem from './TaskItem';
+import { auth } from '../../firebase';
+import { useDispatch } from 'react-redux';
+import { getDateTasks } from '../../store/task-actions';
+
+const month = new Date().getMonth() + 1;
+const date = new Date().getDate();
+const initialMonth = month < 10 ? '0' + month : month;
+const initialDate = date < 10 ? '0' + date : date;
 
 const Task = () => {
   const [showModal, setShowModal] = useState(false);
-  const [taskData, setTaskData] = useState(null);
 
-  const auth = getAuth();
+  const dispatch = useDispatch();
+
+  const userId = auth.currentUser.uid;
+
+  const formatedDate = `${new Date().getFullYear()}${initialMonth}${initialDate}`;
 
   useEffect(() => {
-    try {
-      const db = getDatabase();
-      const userId = auth.currentUser.uid;
-      const postRef = ref(db, `planit/${userId}`);
-
-      onValue(postRef, (snapshot) => {
-        const data = snapshot.val();
-
-        if (data) {
-          setTaskData(data);
-          console.log(data);
-        }
-      });
-    } catch (err) {
-      console.log(err.message || '일정을 불러올 수 없습니다.');
-    }
-  }, []);
+    dispatch(getDateTasks({ userId, formatedDate }));
+  }, [dispatch]);
 
   const show = () => {
     setShowModal(true);
@@ -45,9 +40,7 @@ const Task = () => {
         <CreateBtn onShow={show} />
         <div>
           <ul>
-            <li>일정을 추가하세요.</li>
-            <li>일정을 추가하세요.</li>
-            <li>일정을 추가하세요.</li>
+            <TaskItem />
           </ul>
         </div>
       </TaskArea>

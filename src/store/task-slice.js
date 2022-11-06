@@ -1,16 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const month = new Date().getMonth() + 1;
-const date = new Date().getDate();
-
-const initialMonth = month < 10 ? '0' + month : month;
-const initialDate = date < 10 ? '0' + date : date;
-
 const initialStateValue = {
-  date: `${new Date().getFullYear()}${initialMonth}${initialDate}`,
+  date: '',
   categories: [],
   selectedCategory: '',
-  memos: {},
+  tasks: [],
+  notification: { status: '', messgae: '' },
 };
 
 const taskSlice = createSlice({
@@ -28,15 +23,18 @@ const taskSlice = createSlice({
     setCategory: (state, action) => {
       state.selectedCategory = action.payload;
     },
-    setMemo: (state, action) => {
-      const { id, value } = action.payload;
-      state.memos[id] = value;
+    setTasks: (state, action) => {
+      const newTasks = [];
+      for (const key in action.payload) {
+        newTasks.push([key, action.payload[key]]);
+      }
+      state.tasks = newTasks;
     },
-    removeMemo: (state, action) => {
-      const removeId = Object.keys(state.memos).find(
-        (key) => key === action.payload
-      );
-      delete state.memos[removeId];
+    setNotification: (state, action) => {
+      state.notification = {
+        status: action.payload.status,
+        messgae: action.payload.message,
+      };
     },
     clear: (state) => {
       state.selectedCategory = '';

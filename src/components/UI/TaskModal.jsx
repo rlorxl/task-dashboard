@@ -6,89 +6,39 @@ import CreateCategory from '../modal/CreateCategory';
 import CreateMemo from '../modal/CreateMemo';
 import { Button } from '../../styled/style';
 import { useDispatch, useSelector } from 'react-redux';
-import { getDatabase, ref, onValue, set } from 'firebase/database';
-import { getAuth } from 'firebase/auth';
+import { auth } from '../../firebase';
 import { taskActions } from '../../store/task-slice';
-import usePost from '../../hooks/usePost';
-// import { useCallback, useEffect, useState } from 'react';
-
-const backdropRoot = document.querySelector('#backdrop-root');
-const modalRoot = document.querySelector('#modal-root');
+import sendTaskData from '../../store/task-actions';
+import { useState } from 'react';
 
 const TaskModal = (props) => {
+  const createRandomId = () => {
+    return Math.random().toString(36).substring(2, 12);
+  };
+
+  const [memos, setMemos] = useState([{ id: createRandomId(), content: '' }]);
+
   const dispatch = useDispatch();
 
-  const { date: selectedDate, categories } = useSelector((state) => state.task);
+  const task = useSelector((state) => state.task);
+
+  const userId = auth.currentUser.uid;
 
   const closeModal = () => {
     dispatch(taskActions.clear());
     props.onClose();
   };
 
-  const { taskUpload, newDateTask, newMonthTask } = usePost();
-
-  const db = getDatabase();
-  const auth = getAuth();
-  const userId = auth.currentUser.uid;
-  const postRef = ref(db, `planit/${userId}`);
-  const userRef = ref(db, `planit/${userId}/user`);
-  const month = selectedDate.slice(0, 4) + '-' + selectedDate.slice(4, 6);
-
-  const createTaskKey = (data) => {
-    let taskKey, dateKey;
-    Object.keys(data.tasks).find((key) => {
-      if (key.split('-').join('') === selectedDate.slice(0, 6)) {
-        taskKey = key;
-      }
-    });
-
-    if (taskKey) {
-      Object.keys(data.tasks[taskKey]).find((key) => {
-        if (key === selectedDate) dateKey = key;
-      });
-    }
-
-    return { taskKey, dateKey };
-  };
-
-  const createDateKey = (data, taskKey) => {
-    let dateKey;
-    Object.keys(data.tasks[taskKey]).find((key) => {
-      if (key === selectedDate) dateKey = key;
-    });
-    return dateKey;
-  };
-
-  //prettier-ignore
   const createTask = () => {
-    onValue(postRef, (snapshot) => {
-      const data = snapshot.val();
-
-      if (!data) {
-        newMonthTask({ userId, month });
-      } else {
-        const { taskKey, dateKey } = createTaskKey(data);
-
-        if (dateKey) {
-          taskUpload({ userId, taskKey, dateKey });
-        } else if (taskKey) {
-          newDateTask({ userId, taskKey });
-        } else {
-          newMonthTask({ userId, month });
-        }
-      }
-
-      set(userRef, { categories: categories });
-      closeModal();
-    },
-    { onlyOnce: true }
-  )};
+    dispatch(sendTaskData({ userId, task, memos }));
+    closeModal(); // 성공하면 closeModal 실패하면 에러메세지 alert
+  };
 
   const ModalChildren = (
     <>
       <h2>New Task</h2>
       <CreateCategory />
-      <CreateMemo />
+      <CreateMemo memos={memos} setMemos={setMemos} />
       <BtnArea>
         <CloseBtn onClick={closeModal}>Cancel</CloseBtn>
         <CreateBtn onClick={createTask}>Create</CreateBtn>
@@ -98,8 +48,14 @@ const TaskModal = (props) => {
 
   return (
     <>
-      {ReactDOM.createPortal(<Backdrop />, backdropRoot)}
-      {ReactDOM.createPortal(<Modal>{ModalChildren}</Modal>, modalRoot)}
+      {ReactDOM.createPortal(
+        <Backdrop />,
+        document.querySelector('#backdrop-root')
+      )}
+      {ReactDOM.createPortal(
+        <Modal>{ModalChildren}</Modal>,
+        document.querySelector('#modal-root')
+      )}
     </>
   );
 };

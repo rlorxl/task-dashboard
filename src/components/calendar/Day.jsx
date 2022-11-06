@@ -1,9 +1,12 @@
 import styled, { css } from 'styled-components';
 import { useDispatch } from 'react-redux';
-import { taskActions } from '../../store/task-slice';
+import { auth } from '../../firebase';
+import { getDateTasks } from '../../store/task-actions';
 
 const Day = ({ year, month, date, today, space }) => {
   const dispatch = useDispatch();
+
+  const userId = auth.currentUser.uid;
 
   const setDateHandler = () => {
     if (date === undefined) return;
@@ -11,8 +14,9 @@ const Day = ({ year, month, date, today, space }) => {
     const _date = date + 1;
     const newMonth = _month < 10 ? '0' + _month : _month;
     const newDate = _date < 10 ? '0' + _date : _date;
+    const formatedDate = `${year}${newMonth}${newDate}`;
 
-    dispatch(taskActions.setDate(`${year}${newMonth}${newDate}`));
+    dispatch(getDateTasks({ userId, formatedDate }));
   };
 
   return (

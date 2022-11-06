@@ -4,33 +4,43 @@ import { BiPlus } from 'react-icons/bi';
 import MemoItem from './MemoItem';
 import { useState } from 'react';
 
-const CreateMemo = () => {
-  const [memoItem, setMemoItem] = useState([]);
-
+const CreateMemo = ({ memos, setMemos }) => {
   const createRandomId = () => {
     return Math.random().toString(36).substring(2, 12);
   };
 
-  const addMemoHandler = () => {
-    setMemoItem((prev) => [...prev, { id: createRandomId() }]);
+  const addMemoListHandler = () => {
+    setMemos((prev) => [...prev, { id: createRandomId(), content: '' }]);
+  };
+
+  const addMemoContent = (id, text) => {
+    const newItems = memos.map((item) =>
+      item.id === id ? { ...item, content: text } : item
+    );
+    setMemos(newItems);
   };
 
   const removeMemo = (uniqId) => {
-    const newItems = memoItem.filter((item) => item.id !== uniqId);
-    setMemoItem(newItems);
+    const newItems = memos.filter((item) => item.id !== uniqId);
+    setMemos(newItems);
   };
 
   return (
     <MemoArea>
       <TitleArea>
         <h3>Memo</h3>
-        <Button onClick={addMemoHandler}>
+        <Button onClick={addMemoListHandler}>
           <BiPlus />
         </Button>
       </TitleArea>
       <ul>
-        {memoItem.map((item) => (
-          <MemoItem key={item.id} id={item.id} onRemoveItem={removeMemo} />
+        {memos.map((item) => (
+          <MemoItem
+            key={item.id}
+            id={item.id}
+            onRemoveItem={removeMemo}
+            onAddItem={addMemoContent}
+          />
         ))}
       </ul>
     </MemoArea>
