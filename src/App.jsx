@@ -17,7 +17,7 @@ const App = () => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log(user.uid);
+        // console.log(user.uid);
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);

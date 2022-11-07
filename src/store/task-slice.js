@@ -2,8 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialStateValue = {
   date: '',
-  categories: [],
   selectedCategory: '',
+  categories: [],
   tasks: [],
   notification: { status: '', messgae: '' },
 };

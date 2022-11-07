@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import MonthBtn from '../UI/MonthBtn';
 import Day from './Day';
+import { auth } from '../../firebase';
+import { getDateTasks } from '../../store/task-actions';
 
 const monthName = [
   'January',
@@ -35,11 +38,19 @@ const Calendar = () => {
   const [day, setDay] = useState(initialDate.startDay);
   const today = year === startYear && month === initialDate.startMonth;
 
+  const dispatch = useDispatch();
+
+  const { date: formatedDate } = useSelector((state) => state.task);
+
+  const userId = auth.currentUser.uid;
+
   useEffect(() => {
     const lastDate = new Date(year, month + 1, 0).getDate();
     const newDateArr = new Array(lastDate).fill('');
     setDate(newDateArr);
-  }, [month]);
+
+    dispatch(getDateTasks({ userId, formatedDate, role: 'all' }));
+  }, []);
 
   const increaseMonthHandler = () => {
     if (month === 11) {
@@ -98,7 +109,6 @@ const Calendar = () => {
       <Month>
         <h2>{monthName[month]}</h2>
         <MonthBtn
-          // {...setDateHandler}
           onIncrease={increaseMonthHandler}
           onDecrease={decreaseMonthHandler}
         />

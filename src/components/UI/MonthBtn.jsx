@@ -2,13 +2,13 @@ import styled from 'styled-components';
 import { Button } from '../../styled/style';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 
-const MonthBtn = (props) => {
+const MonthBtn = ({ onIncrease, onDecrease }) => {
   const increaseMonthHandler = () => {
-    props.onIncrease();
+    onIncrease();
   };
 
   const decreaseMonthHandler = () => {
-    props.onDecrease();
+    onDecrease();
   };
 
   return (

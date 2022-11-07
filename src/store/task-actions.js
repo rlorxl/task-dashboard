@@ -1,4 +1,11 @@
-import { getDatabase, ref, onValue, set } from 'firebase/database';
+import {
+  getDatabase,
+  ref,
+  onValue,
+  set,
+  update,
+  remove,
+} from 'firebase/database';
 import { createTaskKey } from '../lib/taskUtils';
 import { newMonthTask, taskUpload, newDateTask } from '../lib/posts';
 import { taskActions } from './task-slice';
@@ -47,7 +54,7 @@ const sendTaskData = (requestData) => {
     } catch (error) {
       dispatch(
         taskActions.setNotification({
-          status: 'SEND_TASKS_ERROR',
+          status: 'SEND_TASKS_FAILED',
           message: error.message,
         })
       );
@@ -63,13 +70,11 @@ export const getDateTasks = (requestData) => {
 
     const getData = () => {
       const month = date.slice(0, 4) + '-' + date.slice(4, 6);
+
       const taskRef = ref(db, `planit/${userId}/tasks/${month}/${date}`);
+
       onValue(taskRef, async (snapshot) => {
         const data = await snapshot.val();
-
-        if (!data) {
-          throw new Error('데이터를 불러올 수 없습니다!');
-        }
 
         dispatch(taskActions.setTasks(data));
       });
@@ -86,7 +91,65 @@ export const getDateTasks = (requestData) => {
     } catch (error) {
       dispatch(
         taskActions.setNotification({
-          status: 'GET_TASKS_ERROR',
+          status: 'GET_TASKS_FAILED',
+          message: error.message,
+        })
+      );
+    }
+  };
+};
+
+export const updateTask = (requestData) => {
+  const { userId, id, date, role } = requestData;
+
+  return async (dispatch) => {
+    const updateData = () => {
+      const month = date.slice(0, 4) + '-' + date.slice(4, 6);
+      const taskRef = ref(db, `planit/${userId}/tasks/${month}/${date}`);
+      onValue(
+        taskRef,
+        async (snapshot) => {
+          const data = await snapshot.val();
+
+          if (!data) {
+            throw new Error('데이터를 불러올 수 없습니다!');
+          }
+
+          if (role === 'update') {
+            const updates = {};
+            // prettier-ignore
+            for (const key in data) {
+              key === id 
+                ? (updates[key] = { ...data[key], completed: !data[key].completed })
+                : (updates[key] = data[key]);
+            }
+            update(taskRef, updates);
+          }
+
+          if (role === 'delete') {
+            const removeRef = ref(
+              db,
+              `planit/${userId}/tasks/${month}/${date}/${id}`
+            );
+            remove(removeRef);
+          }
+        },
+        { onlyOnce: true }
+      );
+    };
+
+    try {
+      updateData();
+      dispatch(
+        taskActions.setNotification({
+          status: 'UPDATE_TASKS_SUCCESS',
+          message: null,
+        })
+      );
+    } catch (error) {
+      dispatch(
+        taskActions.setNotification({
+          status: 'UPDATE_TASKS_FAILED',
           message: error.message,
         })
       );

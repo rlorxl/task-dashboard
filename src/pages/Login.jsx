@@ -36,7 +36,7 @@ const Login = () => {
 
   const fetchUser = (user) => {
     authCtx.login(user.accessToken);
-    navigate('/home');
+    navigate('/');
   };
 
   const loginHandler = async (e) => {

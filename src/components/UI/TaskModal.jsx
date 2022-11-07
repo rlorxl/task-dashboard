@@ -11,11 +11,11 @@ import { taskActions } from '../../store/task-slice';
 import sendTaskData from '../../store/task-actions';
 import { useState } from 'react';
 
-const TaskModal = (props) => {
-  const createRandomId = () => {
-    return Math.random().toString(36).substring(2, 12);
-  };
+const createRandomId = () => {
+  return Math.random().toString(36).substring(2, 12);
+};
 
+const TaskModal = (props) => {
   const [memos, setMemos] = useState([{ id: createRandomId(), content: '' }]);
 
   const dispatch = useDispatch();
