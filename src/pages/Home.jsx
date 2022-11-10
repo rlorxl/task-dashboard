@@ -1,5 +1,4 @@
 import { Card } from '../styled/style';
-
 import Header from '../components/UI/Header';
 import Intro from '../components/intro/Intro';
 import Calendar from '../components/calendar/Calendar';

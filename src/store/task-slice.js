@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialStateValue = {
-  date: '',
   selectedCategory: '',
   categories: [],
   tasks: [],
@@ -12,9 +11,6 @@ const taskSlice = createSlice({
   name: 'task',
   initialState: initialStateValue,
   reducers: {
-    setDate: (state, action) => {
-      state.date = action.payload;
-    },
     addCategory: (state, action) => {
       const isExisted = state.categories.includes(action.payload);
       if (isExisted) return;
@@ -25,6 +21,8 @@ const taskSlice = createSlice({
     },
     setTasks: (state, action) => {
       const newTasks = [];
+      if (!action.payload) state.tasks = [];
+
       for (const key in action.payload) {
         newTasks.push([key, action.payload[key]]);
       }

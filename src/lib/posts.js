@@ -19,12 +19,12 @@ const sendRequest = async (requestConfig) => {
 };
 
 export const newMonthTask = (payload) => {
-  const { userId, task, memos } = payload;
-  const month = task.date.slice(0, 4) + '-' + task.date.slice(4, 6);
+  const { userId, task, date, memos } = payload;
+  const month = date.slice(0, 4) + '-' + date.slice(4, 6);
 
   sendRequest({
     method: 'set',
-    sendRef: `planit/${userId}/tasks/${month}/${task.date}`,
+    sendRef: `planit/${userId}/tasks/${month}/${date}`,
     memos: memos,
     category: task.selectedCategory,
   });
@@ -46,11 +46,11 @@ export const taskUpload = (payload) => {
 
 export const newDateTask = (payload) => {
   const { requestData, taskKey } = payload;
-  const { userId, task, memos } = requestData;
+  const { userId, task, date, memos } = requestData;
 
   sendRequest({
     method: 'update',
-    sendRef: `planit/${userId}/tasks/${taskKey}/${task.date}`,
+    sendRef: `planit/${userId}/tasks/${taskKey}/${date}`,
     memos: memos,
     category: task.selectedCategory,
   });

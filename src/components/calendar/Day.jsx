@@ -1,34 +1,23 @@
 import styled, { css } from 'styled-components';
 import { useDispatch } from 'react-redux';
-import { auth } from '../../firebase';
-import { getDateTasks } from '../../store/task-actions';
-import { useState } from 'react';
+import { calendarActions } from '../../store/calendar-slice';
 
-const Day = ({ year, month, date, today, space }) => {
-  // const [] = useState()
-
+const Day = ({ year, month, date, space }) => {
   const dispatch = useDispatch();
 
-  const userId = auth.currentUser.uid;
-
   const setDateHandler = () => {
-    if (date === undefined) return;
-    const _month = month + 1;
-    const _date = date + 1;
-    const newMonth = _month < 10 ? '0' + _month : _month;
-    const newDate = _date < 10 ? '0' + _date : _date;
-    const formatedDate = `${year}${newMonth}${newDate}`;
-
-    dispatch(getDateTasks({ userId, formatedDate }));
+    const newDate = date < 10 ? '0' + date : date;
+    dispatch(calendarActions.setDate(newDate));
   };
 
+  const isToday =
+    new Date().getFullYear() === year &&
+    new Date().getMonth() === month &&
+    new Date().getDate() === date;
+
   return (
-    <Item
-      isToday={today && date + 1 === new Date().getDate()}
-      space={space}
-      onClick={setDateHandler}
-    >
-      {date >= 0 && date + 1}
+    <Item today={isToday} space={space} onClick={setDateHandler}>
+      {date >= 0 && date}
     </Item>
   );
 };
@@ -53,7 +42,7 @@ const Item = styled.div`
   }
 
   ${(props) =>
-    props.isToday &&
+    props.today &&
     css`
       border: 1.5px solid ${({ theme }) => theme.color.carrot};
       border-radius: 35%;

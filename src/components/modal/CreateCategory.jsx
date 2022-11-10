@@ -2,18 +2,16 @@ import styled from 'styled-components';
 import CategoryItem from './CategoryItem';
 import { Button } from '../../styled/style';
 import { BiPlus } from 'react-icons/bi';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { taskActions } from '../../store/task-slice';
-import { getDatabase, ref, set } from 'firebase/database';
-import { getAuth } from 'firebase/auth';
 
 const CreateCategory = () => {
   const categoryInputRef = useRef();
   const dispatch = useDispatch();
   const { categories } = useSelector((state) => state.task);
 
-  const addCategory = async (e) => {
+  const addCategory = (e) => {
     e.preventDefault();
     if (categoryInputRef.current.value.trim() !== '') {
       dispatch(taskActions.addCategory(categoryInputRef.current.value));

@@ -26,7 +26,7 @@ const sendTaskData = (requestData) => {
           } else {
             const { taskKey, dateKey } = createTaskKey(
               data.tasks,
-              requestData.task.date
+              requestData.date
             );
             if (dateKey) {
               taskUpload({ requestData, taskKey, dateKey });
@@ -62,26 +62,22 @@ const sendTaskData = (requestData) => {
   };
 };
 
-export const getDateTasks = (requestData) => {
-  const { userId, formatedDate: date } = requestData;
+export const getTasks = (requestData) => {
+  const { userId, taskKey } = requestData;
 
   return async (dispatch) => {
-    dispatch(taskActions.setDate(date));
-
-    const getData = () => {
-      const month = date.slice(0, 4) + '-' + date.slice(4, 6);
-
-      const taskRef = ref(db, `planit/${userId}/tasks/${month}/${date}`);
-
+    const getAllData = async () => {
+      const taskRef = ref(db, `planit/${userId}/tasks/${taskKey}`);
       onValue(taskRef, async (snapshot) => {
         const data = await snapshot.val();
-
         dispatch(taskActions.setTasks(data));
       });
     };
 
+    // const getDateData =
+
     try {
-      getData();
+      getAllData();
       dispatch(
         taskActions.setNotification({
           status: 'GET_TASKS_SUCCESS',
@@ -104,13 +100,14 @@ export const updateTask = (requestData) => {
 
   return async (dispatch) => {
     const updateData = () => {
-      const month = date.slice(0, 4) + '-' + date.slice(4, 6);
-      const taskRef = ref(db, `planit/${userId}/tasks/${month}/${date}`);
+      const taskKey = date.slice(0, 4) + '-' + date.slice(4, 6);
+      const taskRef = ref(db, `planit/${userId}/tasks/${taskKey}/${date}`);
+
       onValue(
         taskRef,
         async (snapshot) => {
           const data = await snapshot.val();
-
+          console.log(data);
           if (!data) {
             throw new Error('데이터를 불러올 수 없습니다!');
           }
@@ -123,13 +120,14 @@ export const updateTask = (requestData) => {
                 ? (updates[key] = { ...data[key], completed: !data[key].completed })
                 : (updates[key] = data[key]);
             }
+
             update(taskRef, updates);
           }
 
           if (role === 'delete') {
             const removeRef = ref(
               db,
-              `planit/${userId}/tasks/${month}/${date}/${id}`
+              `planit/${userId}/tasks/${taskKey}/${date}/${id}`
             );
             remove(removeRef);
           }

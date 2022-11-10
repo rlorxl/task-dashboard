@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import MonthBtn from '../UI/MonthBtn';
 import Day from './Day';
 import { auth } from '../../firebase';
-import { getDateTasks } from '../../store/task-actions';
+import { getTasks } from '../../store/task-actions';
+import { calendarActions } from '../../store/calendar-slice';
 
 const monthName = [
   'January',
@@ -22,87 +23,42 @@ const monthName = [
   'December',
 ];
 const week = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-const newDate = new Date();
-const startYear = newDate.getFullYear();
-
-const initialDate = {
-  startMonth: newDate.getMonth(),
-  startDate: new Date(startYear, newDate.getMonth(), 0).getDate(),
-  startDay: new Date(startYear, newDate.getMonth(), 1).getDay(),
-};
 
 const Calendar = () => {
-  const [year, setYear] = useState(startYear);
-  const [month, setMonth] = useState(initialDate.startMonth);
   const [date, setDate] = useState([]);
-  const [day, setDay] = useState(initialDate.startDay);
-  const today = year === startYear && month === initialDate.startMonth;
+  const [startDay, setStartDay] = useState([]);
+
+  const { year, month, day } = useSelector((state) => state.calendar);
 
   const dispatch = useDispatch();
-
-  const { date: formatedDate } = useSelector((state) => state.task);
-
   const userId = auth.currentUser.uid;
+
+  const increaseMonthHandler = () => {
+    dispatch(calendarActions.increaseMonth());
+  };
+
+  const decreaseMonthHandler = () => {
+    dispatch(calendarActions.decreaseMonth());
+  };
+
+  const formattedMonth = () => {
+    const _month = month + 1;
+    return _month < 10 ? '0' + _month : _month;
+  };
+
+  useEffect(() => {
+    const taskKey = `${year}-${formattedMonth()}`;
+    dispatch(getTasks({ userId, taskKey }));
+  }, [date]);
 
   useEffect(() => {
     const lastDate = new Date(year, month + 1, 0).getDate();
     const newDateArr = new Array(lastDate).fill('');
+    const lastDays = new Array(day).fill('');
+
     setDate(newDateArr);
-
-    dispatch(getDateTasks({ userId, formatedDate, role: 'all' }));
-  }, []);
-
-  const increaseMonthHandler = () => {
-    if (month === 11) {
-      setMonth(0);
-      setYear((prev) => prev + 1);
-    } else setMonth((prev) => prev + 1);
-
-    const startDay = new Date(year, month + 1, 1).getDay();
-    setDay(startDay);
-  };
-
-  const decreaseMonthHandler = () => {
-    if (month === 0) {
-      setMonth(11);
-      setYear((prev) => prev - 1);
-    } else setMonth((prev) => prev - 1);
-
-    const startDay = new Date(year, month - 1, 1).getDay();
-    setDay(startDay);
-  };
-
-  // const setDateHandler = {
-  //   increaseMonth() {
-  //     if (month >= 11) setMonth(0);
-  //     else setMonth(month + 1);
-  //   },
-  //   decreaseMonth() {
-  //     if (month <= 0) setMonth(11);
-  //     else setMonth(month - 1);
-  //   },
-  //   setPrevYear() {
-  //     if (month <= 0) setYear(year - 1);
-  //   },
-  //   setNextYear() {
-  //     if (month >= 11) setYear(year + 1);
-  //   },
-  //   setDate() {
-  //     const lastDate = new Date(year, month, 0).getDate();
-  //     const newDateArr = new Array(lastDate).fill('');
-  //     setDate(newDateArr);
-  //   },
-  //   setNextDay() {
-  //     const startDay = new Date(year, month + 1, 1).getDay();
-  //     setDay(startDay);
-  //   },
-  //   setPrevDay() {
-  //     const startDay = new Date(year, month - 1, 1).getDay();
-  //     setDay(startDay);
-  //   },
-  // };
-
-  const test = Array(day).fill(0);
+    setStartDay(lastDays);
+  }, [month]);
 
   return (
     <CalendarArea>
@@ -119,11 +75,11 @@ const Calendar = () => {
         ))}
       </Flexbox>
       <Flexbox gap='2%'>
-        {test.map((_, i) => (
+        {startDay.map((_, i) => (
           <Day key={i} space={'space'} />
         ))}
         {date.map((_, i) => (
-          <Day key={i} year={year} month={month} date={i} today={today} />
+          <Day key={i} date={i + 1} year={year} month={month} />
         ))}
       </Flexbox>
     </CalendarArea>

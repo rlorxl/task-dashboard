@@ -5,18 +5,14 @@ import TaskModal from '../UI/TaskModal';
 import TaskItem from './TaskItem';
 import { auth } from '../../firebase';
 import { useDispatch, useSelector } from 'react-redux';
-import { getDateTasks, updateTask } from '../../store/task-actions';
-
-const month = new Date().getMonth() + 1;
-const date = new Date().getDate();
-const initialMonth = month < 10 ? '0' + month : month;
-const initialDate = date < 10 ? '0' + date : date;
+import { getTasks, updateTask } from '../../store/task-actions';
 
 const Task = () => {
   const [showModal, setShowModal] = useState(false);
-  // taskData가 따로 있어야 함.
+  const [taskData, setTaskData] = useState([]);
 
-  const { tasks, date, notification } = useSelector((state) => state.task);
+  const { tasks } = useSelector((state) => state.task);
+  const { date } = useSelector((state) => state.calendar);
 
   const dispatch = useDispatch();
 
@@ -30,10 +26,14 @@ const Task = () => {
     dispatch(updateTask({ userId, id, date, role: 'delete' }));
   };
 
+  // 왜 if / else로 하면 안될까??
   useEffect(() => {
-    const formatedDate = `${new Date().getFullYear()}${initialMonth}${initialDate}`;
-    dispatch(getDateTasks({ userId, formatedDate }));
-  }, []);
+    setTaskData([]);
+
+    tasks.map(
+      ([id, contents]) => id === date && setTaskData(Object.entries(contents))
+    );
+  }, [tasks, date]);
 
   const show = () => {
     setShowModal(true);
@@ -44,8 +44,8 @@ const Task = () => {
   };
 
   let contents;
-  if (tasks.length > 0) {
-    contents = tasks.map(([key, value]) => (
+  if (taskData.length > 0) {
+    contents = taskData.map(([key, value]) => (
       <TaskItem
         key={key}
         id={key}
@@ -56,7 +56,7 @@ const Task = () => {
     ));
   }
 
-  if (tasks.length < 1) {
+  if (taskData.length < 1) {
     contents = <p>새로운 일정을 추가하세요.</p>;
   }
 

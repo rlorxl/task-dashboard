@@ -21,6 +21,7 @@ const TaskModal = (props) => {
   const dispatch = useDispatch();
 
   const task = useSelector((state) => state.task);
+  const { date } = useSelector((state) => state.calendar);
 
   const userId = auth.currentUser.uid;
 
@@ -30,8 +31,8 @@ const TaskModal = (props) => {
   };
 
   const createTask = () => {
-    dispatch(sendTaskData({ userId, task, memos }));
-    closeModal(); // 성공하면 closeModal 실패하면 에러메세지 alert
+    dispatch(sendTaskData({ userId, date, task, memos }));
+    closeModal(); // 성공하면 closeModal, 실패하면 에러메세지 alert
   };
 
   const ModalChildren = (
