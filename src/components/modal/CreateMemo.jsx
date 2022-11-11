@@ -51,6 +51,9 @@ const MemoArea = styled.div`
   ul {
     height: 150px;
     overflow-y: scroll;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 `;
 

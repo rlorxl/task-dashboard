@@ -6,7 +6,7 @@ import MonthBtn from '../UI/MonthBtn';
 import Day from './Day';
 import { auth } from '../../firebase';
 import { getTasks } from '../../store/task-actions';
-import { calendarActions } from '../../store/calendar-slice';
+import { calendarActions, formattedMonth } from '../../store/calendar-slice';
 
 const monthName = [
   'January',
@@ -41,13 +41,8 @@ const Calendar = () => {
     dispatch(calendarActions.decreaseMonth());
   };
 
-  const formattedMonth = () => {
-    const _month = month + 1;
-    return _month < 10 ? '0' + _month : _month;
-  };
-
   useEffect(() => {
-    const taskKey = `${year}-${formattedMonth()}`;
+    const taskKey = `${year}-${formattedMonth(month)}`;
     dispatch(getTasks({ userId, taskKey }));
   }, [date]);
 
@@ -89,6 +84,7 @@ const Calendar = () => {
 const CalendarArea = styled.section`
   margin: 0 auto;
   flex-basis: 400px;
+  margin: 0 1em;
 `;
 
 const Month = styled.div`

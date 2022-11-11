@@ -94,6 +94,7 @@ const CheckIcon = styled.span`
 
       & + span {
         color: ${({ theme }) => theme.color.gray};
+        text-decoration: line-through;
       }
     `}
 `;

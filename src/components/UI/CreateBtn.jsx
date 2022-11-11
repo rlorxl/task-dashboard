@@ -20,7 +20,7 @@ const CreateBtn = (props) => {
 };
 
 const BtnArea = styled.div`
-  width: 30%;
+  width: 170px;
   float: right;
 `;
 

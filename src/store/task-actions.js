@@ -107,7 +107,6 @@ export const updateTask = (requestData) => {
         taskRef,
         async (snapshot) => {
           const data = await snapshot.val();
-          console.log(data);
           if (!data) {
             throw new Error('데이터를 불러올 수 없습니다!');
           }

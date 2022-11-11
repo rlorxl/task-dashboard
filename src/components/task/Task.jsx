@@ -5,7 +5,7 @@ import TaskModal from '../UI/TaskModal';
 import TaskItem from './TaskItem';
 import { auth } from '../../firebase';
 import { useDispatch, useSelector } from 'react-redux';
-import { getTasks, updateTask } from '../../store/task-actions';
+import { updateTask } from '../../store/task-actions';
 
 const Task = () => {
   const [showModal, setShowModal] = useState(false);
@@ -82,9 +82,12 @@ const TaskArea = styled.section`
   ul {
     width: 100%;
     height: 450px;
-    padding-left: 4em;
+    padding-left: 3em;
     margin-top: 6em;
     overflow: scroll;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 `;
 

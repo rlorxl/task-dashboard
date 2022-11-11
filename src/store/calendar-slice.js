@@ -4,13 +4,13 @@ const THIS_YEAR = new Date().getFullYear();
 const THIS_MONTH = new Date().getMonth();
 const THIS_DATE = new Date().getDate();
 
-export const formattedMonth = () => {
-  const _month = THIS_MONTH + 1;
+export const formattedMonth = (month = THIS_MONTH) => {
+  const _month = month + 1;
   return _month < 10 ? '0' + _month : _month;
 };
 
-export const formattedDate = () => {
-  return THIS_DATE < 10 ? '0' + THIS_DATE : THIS_DATE;
+export const formattedDate = (date = THIS_DATE) => {
+  return date < 10 ? '0' + date : date;
 };
 
 const initialStateValue = {

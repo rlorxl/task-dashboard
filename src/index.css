@@ -35,6 +35,8 @@ body {
   min-width: 320px;
   min-height: 100vh;
   color: #ffffff;
+  overflow-y: hidden;
+  position: relative;
 }
 
 h1 {
