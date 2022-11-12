@@ -5,25 +5,29 @@ import TaskModal from '../UI/TaskModal';
 import TaskItem from './TaskItem';
 import { auth } from '../../firebase';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateTask } from '../../store/task-actions';
+import { handleAsyncActions } from '../../store/modules/task-actions';
 
 const Task = () => {
   const [showModal, setShowModal] = useState(false);
   const [taskData, setTaskData] = useState([]);
 
   const { tasks } = useSelector((state) => state.task);
-  const { date } = useSelector((state) => state.calendar);
+  const { date, year, month } = useSelector((state) => state.calendar);
 
   const dispatch = useDispatch();
 
   const userId = auth.currentUser.uid;
 
   const changeCompleted = (id) => {
-    dispatch(updateTask({ userId, id, date, role: 'update' }));
+    dispatch(
+      handleAsyncActions('UPDATE', { userId, id, date, role: 'update' })
+    );
   };
 
   const deleteTask = (id) => {
-    dispatch(updateTask({ userId, id, date, role: 'delete' }));
+    dispatch(
+      handleAsyncActions('UPDATE', { userId, id, date, role: 'delete' })
+    );
   };
 
   // 왜 if / else로 하면 안될까??
@@ -64,10 +68,13 @@ const Task = () => {
     <>
       {showModal && <TaskModal onClose={close} />}
       <TaskArea>
-        <CreateBtn onShow={show} />
         <div>
-          <ul>{contents}</ul>
+          <Date>
+            {year}/{month + 1}/{date.slice(6)}
+          </Date>
+          <CreateBtn onShow={show} />
         </div>
+        <ul>{contents}</ul>
       </TaskArea>
     </>
   );
@@ -79,16 +86,28 @@ const TaskArea = styled.section`
   border-left: 1px solid ${({ theme }) => theme.color.gray};
   display: flow-root;
 
+  & > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 3em;
+  }
+
   ul {
     width: 100%;
-    height: 450px;
+    height: 420px;
     padding-left: 3em;
-    margin-top: 6em;
+    margin-top: 2.5em;
     overflow: scroll;
     &::-webkit-scrollbar {
       display: none;
     }
   }
+`;
+
+const Date = styled.span`
+  font-size: 1.2em;
+  color: ${({ theme }) => theme.color.carrot};
 `;
 
 export default Task;

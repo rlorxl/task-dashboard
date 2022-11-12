@@ -1,20 +1,22 @@
+import styled from 'styled-components';
 import React, { useContext, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import { Button } from '../styled/style';
 import { BsArrowRightShort } from 'react-icons/bs';
 import Logo from '../components/UI/Logo';
 import Input from '../components/UI/Input';
 import AuthContext from '../store/auth-context';
-import { Button } from '../styled/style';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import app from '../firebase';
 
 const Login = () => {
-  const navigate = useNavigate();
-  const authCtx = useContext(AuthContext);
-  const auth = getAuth(app);
-
   const [isAllTouched, setIsAllTouched] = useState(false);
+
+  const navigate = useNavigate();
+
+  const authCtx = useContext(AuthContext);
+
+  const auth = getAuth(app);
 
   const emailInputRef = useRef();
   const passwordInputRef = useRef();

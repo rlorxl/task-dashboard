@@ -4,7 +4,7 @@ import { Button } from '../../styled/style';
 import { BiPlus } from 'react-icons/bi';
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { taskActions } from '../../store/task-slice';
+import { taskActions } from '../../store/modules/task-slice';
 
 const CreateCategory = () => {
   const categoryInputRef = useRef();
@@ -36,9 +36,10 @@ const CreateCategory = () => {
         </AddCategory>
       </TitleArea>
       <CategoryListArea>
-        {categories.map((item) => (
-          <CategoryItem key={item} item={item} onSelect={selectCategory} />
-        ))}
+        {categories &&
+          categories.map((item) => (
+            <CategoryItem key={item} item={item} onSelect={selectCategory} />
+          ))}
       </CategoryListArea>
     </div>
   );

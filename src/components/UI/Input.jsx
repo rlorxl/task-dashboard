@@ -15,6 +15,7 @@ const CustomInput = styled.input`
   margin-top: 10px;
   outline: none;
   margin-right: 13px;
+  color: ${({ theme }) => theme.color.gray};
 
   &:nth-child(2) {
     margin-right: 0;

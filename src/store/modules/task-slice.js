@@ -4,6 +4,7 @@ const initialStateValue = {
   selectedCategory: '',
   categories: [],
   tasks: [],
+  goal: '',
   notification: { status: '', messgae: '' },
 };
 
@@ -11,13 +12,16 @@ const taskSlice = createSlice({
   name: 'task',
   initialState: initialStateValue,
   reducers: {
+    setCategory: (state, action) => {
+      state.selectedCategory = action.payload;
+    },
+    setCategories: (state, action) => {
+      state.categories = action.payload;
+    },
     addCategory: (state, action) => {
       const isExisted = state.categories.includes(action.payload);
       if (isExisted) return;
       else state.categories.push(action.payload);
-    },
-    setCategory: (state, action) => {
-      state.selectedCategory = action.payload;
     },
     setTasks: (state, action) => {
       const newTasks = [];
@@ -27,6 +31,9 @@ const taskSlice = createSlice({
         newTasks.push([key, action.payload[key]]);
       }
       state.tasks = newTasks;
+    },
+    setGoal: (state, action) => {
+      state.goal = action.payload.text;
     },
     setNotification: (state, action) => {
       state.notification = {

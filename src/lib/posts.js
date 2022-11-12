@@ -15,7 +15,11 @@ const sendRequest = async (requestConfig) => {
     tasks[id] = postData;
   });
 
-  method === 'set' ? await set(postRef, tasks) : await update(postRef, tasks);
+  if (method === 'set') {
+    await set(postRef, tasks);
+  } else {
+    await update(postRef, tasks);
+  }
 };
 
 export const newMonthTask = (payload) => {

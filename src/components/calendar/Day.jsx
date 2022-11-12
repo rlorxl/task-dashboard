@@ -4,7 +4,7 @@ import {
   calendarActions,
   formattedDate,
   formattedMonth,
-} from '../../store/calendar-slice';
+} from '../../store/modules/calendar-slice';
 import { useEffect } from 'react';
 import { useState } from 'react';
 

@@ -1,12 +1,15 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import MonthBtn from '../UI/MonthBtn';
 import Day from './Day';
 import { auth } from '../../firebase';
-import { getTasks } from '../../store/task-actions';
-import { calendarActions, formattedMonth } from '../../store/calendar-slice';
+import { handleAsyncActions } from '../../store/modules/task-actions';
+import {
+  calendarActions,
+  formattedMonth,
+} from '../../store/modules/calendar-slice';
 
 const monthName = [
   'January',
@@ -35,15 +38,18 @@ const Calendar = () => {
 
   const increaseMonthHandler = () => {
     dispatch(calendarActions.increaseMonth());
+    dispatch(calendarActions.setDate('01'));
   };
 
   const decreaseMonthHandler = () => {
     dispatch(calendarActions.decreaseMonth());
+    dispatch(calendarActions.setDate('01'));
   };
 
   useEffect(() => {
     const taskKey = `${year}-${formattedMonth(month)}`;
-    dispatch(getTasks({ userId, taskKey }));
+    dispatch(handleAsyncActions('GET', { userId, taskKey, role: 'all' }));
+    dispatch(handleAsyncActions('CATEGORY', { userId }));
   }, [date]);
 
   useEffect(() => {

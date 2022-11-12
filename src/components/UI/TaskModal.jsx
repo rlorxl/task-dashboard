@@ -7,8 +7,8 @@ import CreateMemo from '../modal/CreateMemo';
 import { Button } from '../../styled/style';
 import { useDispatch, useSelector } from 'react-redux';
 import { auth } from '../../firebase';
-import { taskActions } from '../../store/task-slice';
-import sendTaskData from '../../store/task-actions';
+import { taskActions } from '../../store/modules/task-slice';
+import { handleAsyncActions } from '../../store/modules/task-actions';
 import { useState } from 'react';
 
 const createRandomId = () => {
@@ -31,7 +31,7 @@ const TaskModal = (props) => {
   };
 
   const createTask = () => {
-    dispatch(sendTaskData({ userId, date, task, memos }));
+    dispatch(handleAsyncActions('SEND', { userId, date, task, memos }));
     closeModal(); // 성공하면 closeModal, 실패하면 에러메세지 alert
   };
 

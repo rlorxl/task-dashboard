@@ -11,12 +11,12 @@ import loading07 from '../../assets/loadingImages/planet07.svg';
 import loading08 from '../../assets/loadingImages/planet08.svg';
 import loading09 from '../../assets/loadingImages/planet09.svg';
 import loading10 from '../../assets/loadingImages/planet10.svg';
-import loading11 from '../../assets/loadingImages/planet10.svg';
-import loading12 from '../../assets/loadingImages/planet10.svg';
-import loading13 from '../../assets/loadingImages/planet10.svg';
-import loading14 from '../../assets/loadingImages/planet10.svg';
-import loading15 from '../../assets/loadingImages/planet10.svg';
-import loading16 from '../../assets/loadingImages/planet10.svg';
+import loading11 from '../../assets/loadingImages/planet11.svg';
+import loading12 from '../../assets/loadingImages/planet12.svg';
+import loading13 from '../../assets/loadingImages/planet13.svg';
+import loading14 from '../../assets/loadingImages/planet14.svg';
+import loading15 from '../../assets/loadingImages/planet15.svg';
+import loading16 from '../../assets/loadingImages/planet16.svg';
 
 const loadingImages = [
   loading01,

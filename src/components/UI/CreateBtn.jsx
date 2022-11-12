@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { BiPlusCircle } from 'react-icons/bi';
+import { BiPlus } from 'react-icons/bi';
 import { Button } from '../../styled/style';
 
 const CreateBtn = (props) => {
@@ -12,7 +12,7 @@ const CreateBtn = (props) => {
       <CreateNew>
         <span>Create New</span>
         <span>
-          <BiPlusCircle />
+          <BiPlus />
         </span>
       </CreateNew>
     </BtnArea>
@@ -21,7 +21,6 @@ const CreateBtn = (props) => {
 
 const BtnArea = styled.div`
   width: 170px;
-  float: right;
 `;
 
 const CreateNew = styled(Button)`
@@ -36,6 +35,7 @@ const CreateNew = styled(Button)`
   text-decoration: none;
   color: ${({ theme }) => theme.color.carrot};
   margin-top: 1em;
+  font-size: 1em;
 
   svg {
     font-size: 1.2em;
