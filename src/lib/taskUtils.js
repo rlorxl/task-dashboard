@@ -63,7 +63,7 @@ export const getTasks = (requestData) => {
   const { userId, taskKey, role } = payload;
 
   if (role === 'all') {
-    console.log(payload);
+    // console.log(payload);
     const taskRef = ref(db, `planit/${userId}/tasks/${taskKey}`);
     onValue(taskRef, async (snapshot) => {
       const data = await snapshot.val();

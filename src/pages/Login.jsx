@@ -51,7 +51,7 @@ const Login = () => {
     )
       .then((userCredential) => {
         const { user } = userCredential;
-        console.log(user);
+        // console.log(user);
         fetchUser(user);
       })
       .catch((error) => {

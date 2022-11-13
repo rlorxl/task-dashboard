@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { FaTrashAlt } from 'react-icons/fa';
+import { AiOutlineDelete } from 'react-icons/ai';
 
 const TaskItem = ({ id, contents, onChangeCompleted, onDeleteTask }) => {
   const { category, completed, memo } = contents;
@@ -15,18 +15,22 @@ const TaskItem = ({ id, contents, onChangeCompleted, onDeleteTask }) => {
 
   return (
     <ItemWrap>
-      <div>
-        <input type='checkbox' id={id} />
-        <label htmlFor={id} onClick={changeCompletedHandler}>
+      <input type='checkbox' id={id} />
+      <label htmlFor={id} onClick={changeCompletedHandler}>
+        <div>
           <CheckIcon checked={completed} />
-          <span>{memo}</span>
-        </label>
-        <FaTrashAlt onClick={deleteTaskHandler} />
+        </div>
+        <div>
+          <p>{memo}</p>
+          <p>
+            {category}
+            {completed === true && <Completed> · completed</Completed>}
+          </p>
+        </div>
+      </label>
+      <div>
+        <AiOutlineDelete onClick={deleteTaskHandler} />
       </div>
-      <p>
-        {category}
-        {completed === true && <Completed> · completed</Completed>}
-      </p>
     </ItemWrap>
   );
 };
@@ -40,11 +44,9 @@ const ItemWrap = styled.li`
   font-size: 1em;
   margin-bottom: 0.6em;
 
-  div {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   label {
     display: flex;
@@ -54,12 +56,17 @@ const ItemWrap = styled.li`
   p {
     margin: 0;
     color: ${({ theme }) => theme.color.gray};
-    font-size: 0.8em;
-    padding-left: 30px;
+    font-size: 0.9em;
+    margin-left: 8px;
   }
 
   [type='checkbox'] {
     display: none;
+  }
+
+  svg {
+    margin-left: 8px;
+    font-size: 1.2em;
   }
 `;
 

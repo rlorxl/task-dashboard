@@ -17,6 +17,7 @@ import loading13 from '../../assets/loadingImages/planet13.svg';
 import loading14 from '../../assets/loadingImages/planet14.svg';
 import loading15 from '../../assets/loadingImages/planet15.svg';
 import loading16 from '../../assets/loadingImages/planet16.svg';
+import useInterval from './useInterval';
 
 const loadingImages = [
   loading01,
@@ -40,23 +41,21 @@ const loadingImages = [
 const Loading = () => {
   const [count, setCount] = useState(0);
 
-  const countUp = () => {
-    if (count >= 15) {
-      setCount(0);
-    } else {
-      setCount((prev) => prev + 1);
-    }
-  };
+  useInterval(() => {
+    if (count >= 15) setCount(0);
+    setCount((prev) => prev + 1);
+  }, 100);
 
-  useEffect(() => {
-    let imageCount = setInterval(() => {
-      countUp();
-    }, 100);
+  // useEffect(() => {
+  //   let timer = setInterval(() => {
+  //     if (count >= 15) setCount(0);
+  //     setCount((prev) => prev + 1);
+  //   }, 100);
 
-    return () => {
-      clearInterval(imageCount);
-    };
-  }, []);
+  //   return () => {
+  //     clearInterval(timer);
+  //   };
+  // }, []);
 
   return (
     <Wrapper>

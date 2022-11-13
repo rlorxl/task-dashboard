@@ -66,7 +66,15 @@ const Signup = () => {
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          throw new Error(`${errorCode}: ${errorMessage}`);
+
+          if (
+            errorCode === 'auth/email-already-in-use' ||
+            errorMessage === 'Firebase: Error (auth/email-already-in-use).'
+          ) {
+            alert(
+              '⚠️ 입력한 이메일을 사용할 수 없습니다. (*이미 존재하는 이메일입니다)'
+            );
+          }
         });
     }
   };

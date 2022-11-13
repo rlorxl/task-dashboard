@@ -30,7 +30,6 @@ const Task = () => {
     );
   };
 
-  // 왜 if / else로 하면 안될까??
   useEffect(() => {
     setTaskData([]);
 

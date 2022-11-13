@@ -5,11 +5,12 @@ import {
   formattedDate,
   formattedMonth,
 } from '../../store/modules/calendar-slice';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 
 const Day = ({ year, month, date }) => {
   const [color, setColor] = useState('');
+  const [active, setActive] = useState(false);
 
   const { tasks } = useSelector((state) => state.task);
   const { date: selectedDate } = useSelector((state) => state.calendar);
@@ -19,10 +20,19 @@ const Day = ({ year, month, date }) => {
   const todayDate = `${year}${_month}${_date}`;
 
   const dispatch = useDispatch();
+  const dayRef = useRef();
 
   const setDateHandler = () => {
     dispatch(calendarActions.setDate(_date));
   };
+
+  useEffect(() => {
+    setActive(false);
+
+    if (_date.toString() === selectedDate.slice(6)) {
+      setActive(true);
+    }
+  }, [selectedDate]);
 
   useEffect(() => {
     setColor('');
@@ -57,14 +67,13 @@ const Day = ({ year, month, date }) => {
     new Date().getMonth() === month &&
     new Date().getDate() === date;
 
-  const active = _date === +selectedDate.slice(6);
-
   return (
     <Item
       today={isToday}
       onClick={setDateHandler}
       color={color}
       isActive={active}
+      ref={dayRef}
     >
       {date >= 0 && date}
     </Item>
