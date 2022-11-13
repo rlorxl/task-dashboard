@@ -23,13 +23,13 @@ const sendRequest = async (requestConfig) => {
 };
 
 export const newMonthTask = (payload) => {
-  const { userId, task, date, memos } = payload;
+  const { userId, task, date, filteredMemos } = payload;
   const month = date.slice(0, 4) + '-' + date.slice(4, 6);
 
   sendRequest({
     method: 'set',
     sendRef: `planit/${userId}/tasks/${month}/${date}`,
-    memos: memos,
+    memos: filteredMemos,
     category: task.selectedCategory,
   });
   console.log('새로운 월별 데이터를 만드는 중...🗓');
@@ -37,12 +37,12 @@ export const newMonthTask = (payload) => {
 
 export const taskUpload = (payload) => {
   const { requestData, taskKey, dateKey } = payload;
-  const { userId, task, memos } = requestData;
+  const { userId, task, filteredMemos } = requestData;
 
   sendRequest({
     method: 'update',
     sendRef: `planit/${userId}/tasks/${taskKey}/${dateKey}`,
-    memos: memos,
+    memos: filteredMemos,
     category: task.selectedCategory,
   });
   console.log('입력 날짜 데이터에 업로드 중...📂');
@@ -50,12 +50,12 @@ export const taskUpload = (payload) => {
 
 export const newDateTask = (payload) => {
   const { requestData, taskKey } = payload;
-  const { userId, task, date, memos } = requestData;
+  const { userId, task, date, filteredMemos } = requestData;
 
   sendRequest({
     method: 'update',
     sendRef: `planit/${userId}/tasks/${taskKey}/${date}`,
-    memos: memos,
+    memos: filteredMemos,
     category: task.selectedCategory,
   });
   console.log('새로운 날짜 데이터에 업로드 중...📂');

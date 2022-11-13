@@ -8,10 +8,11 @@ import {
 import { useEffect } from 'react';
 import { useState } from 'react';
 
-const Day = ({ year, month, date, space }) => {
+const Day = ({ year, month, date }) => {
   const [color, setColor] = useState('');
 
   const { tasks } = useSelector((state) => state.task);
+  const { date: selectedDate } = useSelector((state) => state.calendar);
 
   const _month = formattedMonth(month);
   const _date = formattedDate(date);
@@ -56,8 +57,15 @@ const Day = ({ year, month, date, space }) => {
     new Date().getMonth() === month &&
     new Date().getDate() === date;
 
+  const active = _date === +selectedDate.slice(6);
+
   return (
-    <Item today={isToday} space={space} onClick={setDateHandler} color={color}>
+    <Item
+      today={isToday}
+      onClick={setDateHandler}
+      color={color}
+      isActive={active}
+    >
       {date >= 0 && date}
     </Item>
   );
@@ -69,6 +77,7 @@ const Item = styled.div`
   margin-bottom: 0.5em;
   font-size: 1.2em;
   color: ${({ theme }) => theme.color.carrot};
+  position: relative;
 
   display: flex;
   justify-content: center;
@@ -85,21 +94,43 @@ const Item = styled.div`
   ${(props) =>
     props.today &&
     css`
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 13%;
+        width: 5px;
+        height: 5px;
+        background: ${({ theme }) => theme.color.carrot};
+        border-radius: 50%;
+      }
+    `}
+
+  ${(props) =>
+    props.isActive &&
+    css`
       border: 1.5px solid ${({ theme }) => theme.color.carrot};
       border-radius: 35%;
     `}
 
-  ${(props) =>
-    props.space &&
+    ${(props) =>
+    props.color === 'full' &&
+    props.today &&
     css`
-      border: none;
-      cursor: default;
+      background: ${({ theme }) => theme.color.carrot};
+      border-radius: 35%;
+      color: #fff;
 
-      &:hover {
-        border: none;
-        cursor: default;
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 13%;
+        width: 5px;
+        height: 5px;
+        background: #fff;
+        border-radius: 50%;
       }
     `}
+
 
   ${(props) =>
     props.color === 'full' &&

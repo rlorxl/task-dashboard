@@ -12,16 +12,16 @@ const taskSlice = createSlice({
   name: 'task',
   initialState: initialStateValue,
   reducers: {
+    addCategory: (state, action) => {
+      const isExisted = state.categories.includes(action.payload);
+      if (isExisted) return;
+      else state.categories.push(action.payload);
+    },
     setCategory: (state, action) => {
       state.selectedCategory = action.payload;
     },
     setCategories: (state, action) => {
       state.categories = action.payload;
-    },
-    addCategory: (state, action) => {
-      const isExisted = state.categories.includes(action.payload);
-      if (isExisted) return;
-      else state.categories.push(action.payload);
     },
     setTasks: (state, action) => {
       const newTasks = [];

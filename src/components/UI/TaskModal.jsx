@@ -10,6 +10,8 @@ import { auth } from '../../firebase';
 import { taskActions } from '../../store/modules/task-slice';
 import { handleAsyncActions } from '../../store/modules/task-actions';
 import { useState } from 'react';
+import { BiErrorCircle } from 'react-icons/bi';
+import { useEffect } from 'react';
 
 const createRandomId = () => {
   return Math.random().toString(36).substring(2, 12);
@@ -17,11 +19,22 @@ const createRandomId = () => {
 
 const TaskModal = (props) => {
   const [memos, setMemos] = useState([{ id: createRandomId(), content: '' }]);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const dispatch = useDispatch();
 
   const task = useSelector((state) => state.task);
   const { date } = useSelector((state) => state.calendar);
+  const { selectedCategory } = useSelector((state) => state.task);
+
+  useEffect(() => {
+    let isContentExisted = memos.find((memo) => memo.content !== '');
+    if (selectedCategory !== '' || isContentExisted) {
+      setErrorMessage('');
+      setError(false);
+    }
+  }, [memos, selectedCategory]);
 
   const userId = auth.currentUser.uid;
 
@@ -31,15 +44,34 @@ const TaskModal = (props) => {
   };
 
   const createTask = () => {
-    dispatch(handleAsyncActions('SEND', { userId, date, task, memos }));
-    closeModal(); // 성공하면 closeModal, 실패하면 에러메세지 alert
+    let isContentExisted = memos.find((memo) => memo.content !== '');
+    console.log(isContentExisted);
+    if (selectedCategory === '') {
+      setError((prev) => !prev);
+      setErrorMessage('카테고리를 선택해 주세요.');
+      return;
+    } else if (!isContentExisted) {
+      setError((prev) => !prev);
+      setErrorMessage('입력된 메모가 없습니다.');
+      return;
+    }
+
+    const filteredMemos = memos.filter((memo) => memo.content !== '');
+    dispatch(handleAsyncActions('SEND', { userId, date, task, filteredMemos }));
+    closeModal();
   };
 
   const ModalChildren = (
     <>
       <h2>New Task</h2>
       <CreateCategory />
-      <CreateMemo memos={memos} setMemos={setMemos} />
+      <CreateMemo memos={memos} setMemos={setMemos} setError={setError} />
+      {error && errorMessage !== '' && (
+        <ErrorMessage>
+          <BiErrorCircle />
+          {errorMessage}
+        </ErrorMessage>
+      )}
       <BtnArea>
         <CloseBtn onClick={closeModal}>Cancel</CloseBtn>
         <CreateBtn onClick={createTask}>Create</CreateBtn>
@@ -91,6 +123,20 @@ const CreateBtn = styled(Button)`
   &:hover {
     background-color: ${({ theme }) => theme.color.carrot};
     color: #fff;
+  }
+`;
+
+const ErrorMessage = styled.p`
+  position: absolute;
+  bottom: 25px;
+  left: 40%;
+  display: flex;
+  align-items: center;
+  color: ${({ theme }) => theme.color.error};
+  svg {
+    font-size: 1.3em;
+    margin-right: 3px;
+    transform: translateY(-2px);
   }
 `;
 

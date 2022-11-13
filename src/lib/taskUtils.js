@@ -7,6 +7,7 @@ import {
   remove,
 } from 'firebase/database';
 import { taskActions } from '../store/modules/task-slice';
+import * as posts from '../lib/posts';
 
 // * createKey ------------------------------------------------------------------------------------------------------------------------ //
 const createTaskKey = (data, date) => {
@@ -29,7 +30,6 @@ const createTaskKey = (data, date) => {
 const db = getDatabase();
 
 export const sendTaskData = (requestData) => {
-  console.log(requestData);
   const postRef = ref(db, `planit/${requestData.userId}`);
   const userRef = ref(db, `planit/${requestData.userId}/user/category`);
 
@@ -37,18 +37,18 @@ export const sendTaskData = (requestData) => {
   onValue(postRef, async (snapshot) => {
       const data = await snapshot.val();
       if (!data) {
-        newMonthTask(requestData);
+        posts.newMonthTask(requestData);
       } else {
         const { taskKey, dateKey } = createTaskKey(
           data.tasks,
           requestData.date
         );
         if (dateKey) {
-          taskUpload({ requestData, taskKey, dateKey });
+          posts.taskUpload({ requestData, taskKey, dateKey });
         } else if (taskKey) {
-          newDateTask({ requestData, taskKey });
+          posts.newDateTask({ requestData, taskKey });
         } else {
-          newMonthTask(requestData);
+          posts.newMonthTask(requestData);
         }
       }
 

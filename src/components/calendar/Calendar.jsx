@@ -77,7 +77,7 @@ const Calendar = () => {
       </Flexbox>
       <Flexbox gap='2%'>
         {startDay.map((_, i) => (
-          <Day key={i} space={'space'} />
+          <Space key={i} />
         ))}
         {date.map((_, i) => (
           <Day key={i} date={i + 1} year={year} month={month} />
@@ -111,10 +111,17 @@ const Week = styled.div`
   padding: 0 0.8em;
   color: ${({ theme }) => theme.color.gray};
   margin-bottom: 0.6em;
+`;
 
-  /* &.today {
-        color: $carrot;
-    } */
+const Space = styled.div`
+  width: 50px;
+  height: 50px;
+  margin-bottom: 0.5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-box-align: center;
 `;
 
 const Flexbox = styled.div`
