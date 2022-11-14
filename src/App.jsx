@@ -4,20 +4,20 @@ import Home from './pages/Home';
 import Loading from './components/common/Loading';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import NotFound from './components/common/NotFound';
 
 import { useContext, useEffect, useState } from 'react';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged } from 'firebase/auth';
 import AuthContext from './store/auth-context';
+import { auth } from './firebase';
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const authCtx = useContext(AuthContext);
 
   useEffect(() => {
-    const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // console.log(user.uid);
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);
@@ -26,8 +26,8 @@ const App = () => {
   }, []);
 
   const PrivateRoute = ({ children }) => {
-    if (authCtx.isLoggedIn) {
-      return <Navigate to='/' replace />;
+    if (!authCtx.isLoggedIn) {
+      return <Navigate to='/login' replace />;
     }
     return children;
   };
@@ -35,23 +35,28 @@ const App = () => {
   return (
     <>
       <Routes>
-        <Route path='/' element={isLoggedIn ? <Home /> : <Loading />} />
+        <Route path='/' element={<Navigate replace to='/home' />} />
+        <Route
+          path='/home'
+          element={
+            isLoggedIn ? (
+              <PrivateRoute>
+                <Home />
+              </PrivateRoute>
+            ) : (
+              <Loading />
+            )
+          }
+        />
         <Route
           path='/login'
-          element={
-            <PrivateRoute>
-              <Login />
-            </PrivateRoute>
-          }
+          element={authCtx.isLoggedIn ? <Navigate to='/error' /> : <Login />}
         />
         <Route
           path='/signup'
-          element={
-            <PrivateRoute>
-              <Signup />
-            </PrivateRoute>
-          }
+          element={authCtx.isLoggedIn ? <Navigate to='/error' /> : <Signup />}
         />
+        <Route path='*' element={<NotFound />} />
       </Routes>
     </>
   );
