@@ -18,7 +18,7 @@ const MemoItem = ({ id, onAddItem, onRemoveItem }) => {
         onChange={addMemoHandler}
         autoFocus
       ></textarea>
-      <button onClick={removeMemoHandler}>x</button>
+      <button onClick={removeMemoHandler}>X</button>
     </Memo>
   );
 };

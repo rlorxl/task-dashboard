@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import loading01 from '../../assets/loadingImages/planet01.svg';
 import loading02 from '../../assets/loadingImages/planet02.svg';
@@ -17,7 +16,7 @@ import loading13 from '../../assets/loadingImages/planet13.svg';
 import loading14 from '../../assets/loadingImages/planet14.svg';
 import loading15 from '../../assets/loadingImages/planet15.svg';
 import loading16 from '../../assets/loadingImages/planet16.svg';
-import useInterval from './useInterval';
+import useInterval from '../../hooks/useInterval';
 
 const loadingImages = [
   loading01,
@@ -40,23 +39,10 @@ const loadingImages = [
 
 const Loading = () => {
   const [count, setCount] = useState(0);
-
   useInterval(() => {
     if (count >= 15) setCount(0);
     setCount((prev) => prev + 1);
   }, 100);
-
-  // useEffect(() => {
-  //   let timer = setInterval(() => {
-  //     if (count >= 15) setCount(0);
-  //     setCount((prev) => prev + 1);
-  //   }, 100);
-
-  //   return () => {
-  //     clearInterval(timer);
-  //   };
-  // }, []);
-
   return (
     <Wrapper>
       <div>

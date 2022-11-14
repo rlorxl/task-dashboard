@@ -11,6 +11,7 @@ import { useState } from 'react';
 const Day = ({ year, month, date }) => {
   const [color, setColor] = useState('');
   const [active, setActive] = useState(false);
+  const [isTouched, setIsTouched] = useState(false);
 
   const { tasks } = useSelector((state) => state.task);
   const { date: selectedDate } = useSelector((state) => state.calendar);
@@ -24,6 +25,8 @@ const Day = ({ year, month, date }) => {
 
   const setDateHandler = () => {
     dispatch(calendarActions.setDate(_date));
+
+    setIsTouched(true);
   };
 
   useEffect(() => {
@@ -72,7 +75,7 @@ const Day = ({ year, month, date }) => {
       today={isToday}
       onClick={setDateHandler}
       color={color}
-      isActive={active}
+      isActive={active && isTouched}
       ref={dayRef}
     >
       {date >= 0 && date}
