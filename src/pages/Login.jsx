@@ -51,7 +51,6 @@ const Login = () => {
     )
       .then((userCredential) => {
         const { user } = userCredential;
-        // console.log(user);
         fetchUser(user);
       })
       .catch((error) => {
@@ -66,11 +65,12 @@ const Login = () => {
   return (
     <Wrapper>
       <Logo />
-      <SignupLink to='/signup'>
-        Signup
-        <BsArrowRightShort />
-      </SignupLink>
-
+      <LinkWrap>
+        <SignupLink to='/signup'>
+          Signup
+          <BsArrowRightShort />
+        </SignupLink>
+      </LinkWrap>
       <form onSubmit={loginHandler}>
         <Input
           type='text'
@@ -123,6 +123,12 @@ const LoginBtn = styled(Button)`
   }
 `;
 
+const LinkWrap = styled.div`
+  width: 100%;
+  height: 27px;
+  position: relative;
+`;
+
 const SignupLink = styled(Link)`
   display: flex;
   justify-content: end;
@@ -130,6 +136,9 @@ const SignupLink = styled(Link)`
   color: #fff;
   text-align: end;
   padding-right: 8px;
+  width: 80px;
+  position: absolute;
+  right: 0;
 
   &:hover {
     text-decoration: underline;
