@@ -28,24 +28,22 @@ const App = () => {
   const PrivateRoute = ({ children }) => {
     if (!authCtx.isLoggedIn) {
       return <Navigate to='/login' replace />;
+    } else if (isLoggedIn) {
+      return <Home />;
     }
+
     return children;
   };
 
   return (
     <>
       <Routes>
-        <Route path='/' element={<Navigate replace to='/home' />} />
         <Route
-          path='/home'
+          path='/'
           element={
-            isLoggedIn ? (
-              <PrivateRoute>
-                <Home />
-              </PrivateRoute>
-            ) : (
+            <PrivateRoute>
               <Loading />
-            )
+            </PrivateRoute>
           }
         />
         <Route
