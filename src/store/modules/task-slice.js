@@ -23,6 +23,12 @@ const taskSlice = createSlice({
     setCategories: (state, action) => {
       state.categories = action.payload;
     },
+    updateCategories: (state, action) => {
+      const newCategories = state.categories.filter(
+        (category) => category !== action.payload
+      );
+      state.categories = newCategories;
+    },
     setTasks: (state, action) => {
       const newTasks = [];
       if (!action.payload) state.tasks = [];

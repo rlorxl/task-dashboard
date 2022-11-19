@@ -24,6 +24,10 @@ const CreateCategory = () => {
     dispatch(taskActions.setCategory(name));
   };
 
+  const deleteCategory = (name) => {
+    dispatch(taskActions.updateCategories(name));
+  };
+
   return (
     <div>
       <TitleArea>
@@ -40,7 +44,12 @@ const CreateCategory = () => {
       <CategoryListArea>
         {categories &&
           categories.map((item) => (
-            <CategoryItem key={item} item={item} onSelect={selectCategory} />
+            <CategoryItem
+              key={item}
+              item={item}
+              onSelect={selectCategory}
+              onDelete={deleteCategory}
+            />
           ))}
       </CategoryListArea>
     </div>

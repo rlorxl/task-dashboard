@@ -29,10 +29,10 @@ const App = () => {
     if (!authCtx.isLoggedIn) {
       return <Navigate to='/login' replace />;
     } else if (isLoggedIn) {
-      return <Home />;
+      return children;
     }
 
-    return children;
+    return <Loading />;
   };
 
   return (
@@ -42,7 +42,7 @@ const App = () => {
           path='/'
           element={
             <PrivateRoute>
-              <Loading />
+              <Home />
             </PrivateRoute>
           }
         />
